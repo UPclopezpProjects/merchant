@@ -8,7 +8,7 @@ var MerchantController = require('../controllers/merchant');
 
 //router.get('/get', MerchantController.dataTransaction);
 router.post('/merchantsData', MerchantController.dataTransaction);
-router.post('/getData', MerchantController.getData);
+router.get('/getData', MerchantController.getData);
 
 
 module.exports = router;

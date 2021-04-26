@@ -3,6 +3,7 @@ var axios = require('axios');
 var Merchant = require('../models/Merchants');
 
 function dataTransaction(req, res){
+  console.log(req.body);
   var merchant = new Merchant();
   merchant.fid = req.body.fid;
   merchant.code = req.body.code;
@@ -12,7 +13,7 @@ function dataTransaction(req, res){
   merchant.currentStage = req.body.currentStage;
   merchant.save((err, merchantStored) => {
     if(err) {
-      console.log(err);
+      //console.log(err);
       res.status(500).send({ message: 'Error al guardar los datos' });
     }else{
       if(!merchantStored) {
@@ -48,17 +49,14 @@ function serviceInit(merchantStored, next) {
 }
 
 function getData(req, res) {
-  var code = req.body.code;
-  console.log(code);
-  var query = { id: code };
-  Merchant.findOne(query, (err, data) => {
+  Merchant.find((err, merchantStored) => {
     if(err){
       res.status(500).send({message: 'Error en la petición'});
     }else{
-      if(!data){
+      if(!merchantStored){
         res.status(200).send({message: null});
       }else{
-        res.status(200).send({message: JSON.stringify(data)});
+        res.status(200).send({message: merchantStored});
       }
     }
   });
