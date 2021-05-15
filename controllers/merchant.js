@@ -1,9 +1,9 @@
 'use strict'
 var axios = require('axios');
 var Merchant = require('../models/Merchants');
+var User = require('../models/Users');
 
 function dataTransaction(req, res){
-  console.log(req.body);
   var merchant = new Merchant();
   merchant.fid = req.body.fid;
   merchant.code = req.body.code;
@@ -11,6 +11,8 @@ function dataTransaction(req, res){
   merchant.name = req.body.name;
   merchant.previousStage = req.body.previousStage;
   merchant.currentStage = req.body.currentStage;
+  merchant.nameOfCompany = req.body.nameOfCompany;
+  merchant.image = req.body.image;
   merchant.save((err, merchantStored) => {
     if(err) {
       //console.log(err);
@@ -20,7 +22,7 @@ function dataTransaction(req, res){
         res.status(404).send({ message: 'El dato no ha sido guardado' });
       }else{
         serviceInit(merchantStored, function(data, err) {
-          res.status(200).send({ message: data.message, addData: data.addData });
+          res.status(200).send({ message: data.message, addData: data.addData, info: data.info });
         });
       }
     }
@@ -36,7 +38,8 @@ function serviceInit(merchantStored, next) {
       ubication: merchantStored.ubication,
       name: merchantStored.name,
       previousStage: merchantStored.previousStage,
-      currentStage: merchantStored.currentStage
+      currentStage: merchantStored.currentStage,
+      image: merchantStored.image
     })
     .then(response => {
         //console.log(response.data);
@@ -46,6 +49,37 @@ function serviceInit(merchantStored, next) {
         console.log(error);
         next(null, error);
     });
+}
+
+function dataOfCompany(req, res) {
+  var user = new User();
+  user.email = req.body.email;
+  user.nameOfCompany = req.body.nameOfCompany;
+  user.save((err, userStored) => {
+    if(err) {
+      res.status(500).send({ message: 'Error al guardar los datos para el usuario' });
+    }else{
+      if(!userStored) {
+        res.status(404).send({ message: 'El dato no ha sido guardado para el usuario' });
+      }else{
+        res.status(200).send({ message: true, user: userStored });
+      }
+    }
+  });
+}
+
+function getCompany(req, res) {
+  User.findOne({email: req.body.email}, (err, userStored) => {
+    if(err){
+      res.status(500).send({message: 'Error en la petición'});
+    }else{
+      if(!userStored){
+        res.status(200).send({message: null});
+      }else{
+        res.status(200).send({message: userStored});
+      }
+    }
+  });
 }
 
 function getData(req, res) {
@@ -64,5 +98,7 @@ function getData(req, res) {
 
 module.exports = {
 	dataTransaction,
+  dataOfCompany,
+  getCompany,
   getData
 };
