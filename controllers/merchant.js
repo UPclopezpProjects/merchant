@@ -13,6 +13,7 @@ function dataTransaction(req, res){
   merchant.currentStage = req.body.currentStage;
   merchant.nameOfCompany = req.body.nameOfCompany;
   merchant.image = req.body.image;
+  merchant.description = req.body.description;
   merchant.save((err, merchantStored) => {
     if(err) {
       //console.log(err);
@@ -39,7 +40,8 @@ function serviceInit(merchantStored, next) {
       name: merchantStored.name,
       previousStage: merchantStored.previousStage,
       currentStage: merchantStored.currentStage,
-      image: merchantStored.image
+      image: merchantStored.image,
+      description: merchantStored.description
     })
     .then(response => {
         //console.log(response.data);
