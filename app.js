@@ -1,6 +1,5 @@
 'use stric'
 //
-//global.host = 'host.docker.internal'; //host.docker.internal
 global.host = '172.18.1.10'; //host.docker.internal
 global.port = {
   traceability: '3006',
@@ -22,36 +21,6 @@ var logger = require('morgan');
 
 var app = express();
 
-/*const storage = multer.memoryStorage({
-    destination: function(req, file, callback) {
-        callback(null, '')
-    }
-});*/
-
-/*var storage = multer.diskStorage({
-  //destination: path.join(__dirname, 'public/uploads'),
-  filename: (req, file, cb) => {
-    cb(null, uuid.v4() + path.extname(file.originalname).toLowerCase());
-  }
-});*/
-
-//app.use(multer({storage}).single('image'));
-/*
-app.use(multer({
-  storage,
-  //dest: path.join(__dirname, 'public/uploads'),
-  limits: {filseSize: 1000000},
-  fileFilter: function (req, file, cb) {
-    var filetypes = /jpeg|jpg|png|gif/;
-    var mimetype = filetypes.test(file.mimetype);
-    var extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    if (mimetype && extname) {
-      return cb(null, true);
-    }
-    cb("Error: File upload only supports the following filetypes - " + filetypes);
-  }
-}).single('image'));
-*/
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
