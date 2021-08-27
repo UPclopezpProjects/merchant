@@ -14,6 +14,8 @@ function dataTransaction(req, res){
   merchant.nameOfCompany = req.body.nameOfCompany;
   merchant.image = req.body.image;
   merchant.description = req.body.description;
+  merchant.arrivalDate = req.body.arrivalDate;
+  merchant.departureDate = req.body.departureDate;
   merchant.save((err, merchantStored) => {
     if(err) {
       //console.log(err);
@@ -51,6 +53,31 @@ function serviceInit(merchantStored, next) {
         //console.log(error);
         next(null, error);
     });
+}
+
+function updateTransaction(req, res) {
+  Merchant.findOne({_id: req.body.id}, (err, dataStored) => {
+    if(err){
+      res.status(500).send({ message: 'Error en la petición' });
+    }else{
+      if(!dataStored){
+        res.status(200).send({ message: 'El dato no existe'});
+      }else{
+        Merchant.findOneAndUpdate({ _id: dataStored._id }, {departureDate: req.body.departureDate}, (err, transactionUpdate) => {
+          if(err){
+            res.status(500).send({ message: 'Error al actualizar los datos' });
+          }else{
+            if(!transactionUpdate){
+              res.status(404).send({ message: 'El dato no existe y no ha sido actualizado' });
+            }else{
+              res.status(200).send({ message: true });
+            }
+          }
+        });
+      }
+    }
+  });
+
 }
 
 function dataOfCompany(req, res) {
@@ -119,6 +146,7 @@ function getHistory(req, res) {
 
 module.exports = {
 	dataTransaction,
+  updateTransaction,
   dataOfCompany,
   getCompany,
   getData,
